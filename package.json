@@ -1,0 +1,28 @@
+{
+  "name": "codealpha-social-media-platform",
+  "version": "1.0.0",
+  "description": "CodeAlpha Task 2: Modern Mini Social Media Platform with Profiles, Posts, Comments, Likes, and Follow System",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "seed": "node seed.js",
+    "reset": "node -e \"require('node:fs').rmSync('social.db',{force:true});require('node:fs').rmSync('social.db-shm',{force:true});require('node:fs').rmSync('social.db-wal',{force:true});console.log('Database reset. It will be recreated on next start.');\"",
+    "test": "node ../test_full_suite.js",
+    "test:edge": "node ../test_edge_cases.js",
+    "test:regression": "node ../test_regression.js",
+    "test:dom": "node ../test_dom_integrity.js"
+  },
+  "keywords": [
+    "social-media",
+    "fullstack",
+    "express",
+    "sqlite",
+    "javascript"
+  ],
+  "author": "CodeAlpha Intern",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^4.22.3"
+  }
+}

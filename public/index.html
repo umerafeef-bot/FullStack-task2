@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PulseSocial — Modern Full-Stack Social Media Platform</title>
+  <meta name="description" content="CodeAlpha Task 2: Modern Mini Social Media App with Profiles, Posts, Comments, Likes, and Follow System.">
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-theme="dark">
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- ==================== MOBILE TOP BAR ==================== -->
+  <header class="mobile-top-bar" id="mobile-top-bar">
+    <a href="#" class="brand-logo" id="mobile-brand-logo">
+      <div class="logo-icon"><i data-lucide="radio"></i></div>
+      <div class="logo-text">
+        <span class="logo-title">PULSE<span class="gradient-text">SOCIAL</span></span>
+      </div>
+    </a>
+    <div class="mobile-top-actions">
+      <button id="mobile-trends-toggle-btn" class="icon-btn" title="Trending & Creators">
+        <i data-lucide="sparkles"></i>
+      </button>
+      <button id="mobile-theme-toggle-btn" class="icon-btn" title="Toggle Theme">
+        <i data-lucide="sun" class="sun-icon"></i>
+        <i data-lucide="moon" class="moon-icon"></i>
+      </button>
+      <a href="http://localhost:5000" class="icon-btn" title="Task 1 Store">
+        <i data-lucide="shopping-bag"></i>
+      </a>
+    </div>
+  </header>
+
+  <div class="app-layout">
+    <!-- ==================== LEFT SIDEBAR NAVIGATION ==================== -->
+    <aside class="sidebar-left">
+      <div class="sidebar-inner">
+        <!-- Logo -->
+        <a href="#" class="brand-logo" id="nav-brand-logo">
+          <div class="logo-icon">
+            <i data-lucide="radio"></i>
+          </div>
+          <div class="logo-text">
+            <span class="logo-title">PULSE<span class="gradient-text">SOCIAL</span></span>
+            <span class="badge-tag">CodeAlpha Task 2</span>
+          </div>
+        </a>
+
+        <!-- Main Nav Links -->
+        <nav class="nav-links">
+          <button class="nav-link active" id="nav-home-btn">
+            <i data-lucide="home"></i>
+            <span>Home Feed</span>
+          </button>
+          <button class="nav-link" id="nav-explore-btn">
+            <i data-lucide="compass"></i>
+            <span>Explore</span>
+          </button>
+          <button class="nav-link" id="nav-my-profile-btn">
+            <i data-lucide="user"></i>
+            <span>My Profile</span>
+          </button>
+          <!-- Cross-Task Navigation -->
+          <a href="http://localhost:5000" class="nav-link nav-cross-link" title="Open Task 1: AlphaStore E-commerce">
+            <i data-lucide="shopping-bag"></i>
+            <span>Task 1: Store</span>
+          </a>
+        </nav>
+
+        <!-- Create Post CTA Button -->
+        <button class="btn btn-primary btn-block btn-lg compose-btn" id="sidebar-compose-btn">
+          <i data-lucide="feather"></i>
+          <span>Create Post</span>
+        </button>
+
+        <!-- Theme Toggle Button -->
+        <div class="sidebar-theme-row">
+          <button id="theme-toggle-btn" class="theme-pill-btn">
+            <i data-lucide="sun" class="sun-icon"></i>
+            <i data-lucide="moon" class="moon-icon"></i>
+            <span id="theme-text">Dark Mode</span>
+          </button>
+        </div>
+
+        <!-- Current User Card in Sidebar -->
+        <div class="sidebar-user-card" id="sidebar-user-card">
+          <!-- Populated by JavaScript -->
+        </div>
+      </div>
+    </aside>
+
+    <!-- ==================== CENTER MAIN FEED ==================== -->
+    <main class="main-feed-area">
+      <!-- Top Sticky Feed Header -->
+      <header class="feed-header">
+        <div class="feed-tabs">
+          <button class="feed-tab active" id="tab-for-you">For You</button>
+          <button class="feed-tab" id="tab-following">Following</button>
+        </div>
+
+        <!-- Tag Filters Bar -->
+        <div class="tag-filters-bar" id="tag-filters-bar">
+          <button class="tag-chip active" data-tag="All">All Topics</button>
+          <button class="tag-chip" data-tag="Tech">💻 Tech</button>
+          <button class="tag-chip" data-tag="Design">🎨 Design</button>
+          <button class="tag-chip" data-tag="Art">✨ Art</button>
+          <button class="tag-chip" data-tag="General">☕ General</button>
+        </div>
+      </header>
+
+      <!-- Profile View Container (Hidden when viewing main feed) -->
+      <section id="profile-view-section" class="profile-view-section" style="display: none;">
+        <!-- Rendered by JS -->
+      </section>
+
+      <!-- Create Post Box -->
+      <section class="create-post-card" id="create-post-section">
+        <div class="create-post-body">
+          <img id="composer-user-avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80" alt="Avatar" class="avatar-md">
+          <div class="create-post-inputs">
+            <textarea id="post-content-input" placeholder="What's sparking in your mind today?" rows="3" maxlength="400"></textarea>
+
+            <!-- Optional Image Input Drawer -->
+            <div id="image-input-box" class="image-input-box" style="display: none;">
+              <div class="input-with-icon">
+                <i data-lucide="image"></i>
+                <input type="url" id="post-image-url-input" placeholder="Paste image URL (e.g. Unsplash or direct image link)">
+              </div>
+              <!-- Quick Preset Image Suggestions -->
+              <div class="preset-images-row">
+                <span class="preset-label">Quick picks:</span>
+                <button type="button" class="preset-btn" data-url="https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=1000&auto=format&fit=crop&q=80">💻 Code</button>
+                <button type="button" class="preset-btn" data-url="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=1000&auto=format&fit=crop&q=80">🎧 Studio</button>
+                <button type="button" class="preset-btn" data-url="https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=1000&auto=format&fit=crop&q=80">⌨️ Gear</button>
+                <button type="button" class="preset-btn" data-url="https://images.unsplash.com/photo-1508739773434-c26b3d09e071?w=1000&auto=format&fit=crop&q=80">🏙️ Cyber</button>
+              </div>
+
+              <!-- Live Photo Preview Box -->
+              <div id="composer-preview-container" class="composer-preview-container" style="display: none;">
+                <img id="composer-preview-img" src="" alt="Post Preview">
+                <button type="button" id="remove-preview-btn" class="remove-preview-btn" title="Remove photo">
+                  <i data-lucide="x"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Post Toolbar Footer -->
+            <div class="create-post-toolbar">
+              <div class="toolbar-tools">
+                <button type="button" class="tool-btn" id="toggle-image-input-btn" title="Add image">
+                  <i data-lucide="image"></i>
+                  <span>Photo</span>
+                </button>
+
+                <div class="tag-selector-wrapper">
+                  <select id="post-tag-select">
+                    <option value="General">🏷️ General</option>
+                    <option value="Tech">💻 Tech</option>
+                    <option value="Design">🎨 Design</option>
+                    <option value="Art">✨ Art</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="toolbar-actions">
+                <span id="char-counter" class="char-counter">400</span>
+                <button id="submit-post-btn" class="btn btn-primary btn-sm">
+                  <span>Publish</span>
+                  <i data-lucide="send"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Posts Feed Container -->
+      <section class="posts-feed" id="posts-feed">
+        <!-- Rendered by JavaScript -->
+      </section>
+    </main>
+
+    <!-- ==================== RIGHT SIDEBAR ==================== -->
+    <aside class="sidebar-right">
+      <div class="sidebar-inner">
+        <!-- Search Bar -->
+        <div class="sidebar-search">
+          <i data-lucide="search" class="search-icon"></i>
+          <input type="text" id="search-input" placeholder="Search posts, topics, authors...">
+          <button id="clear-search-btn" class="clear-search-btn" style="display:none;">
+            <i data-lucide="x"></i>
+          </button>
+        </div>
+
+        <!-- Quick Switch Demo Account Widget -->
+        <div class="sidebar-card">
+          <div class="card-header-row">
+            <h4>⚡ Quick Demo Switcher</h4>
+          </div>
+          <p class="card-hint">Switch between accounts instantly with 1 click to test mutual follows, likes, and comments:</p>
+          <div class="demo-accounts-list">
+            <button class="demo-account-chip" data-email="alex@codealpha.com">
+              <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80" alt="Alex">
+              <span>Alex Rivera</span>
+            </button>
+            <button class="demo-account-chip" data-email="sophia@codealpha.com">
+              <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&auto=format&fit=crop&q=80" alt="Sophia">
+              <span>Sophia Patel</span>
+            </button>
+            <button class="demo-account-chip" data-email="marcus@codealpha.com">
+              <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80" alt="Marcus">
+              <span>Marcus Vance</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Who to Follow Suggestions -->
+        <div class="sidebar-card">
+          <div class="card-header-row">
+            <h4>👥 Who to Follow</h4>
+          </div>
+          <div class="suggested-users-list" id="suggested-users-list">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <!-- Trending Topics -->
+        <div class="sidebar-card">
+          <div class="card-header-row">
+            <h4>🔥 Trending Topics</h4>
+          </div>
+          <div class="trending-list">
+            <div class="trending-item" data-tag="Tech">
+              <span class="trend-tag">#Tech</span>
+              <span class="trend-count">1.4k posts</span>
+            </div>
+            <div class="trending-item" data-tag="Design">
+              <span class="trend-tag">#DesignSystems</span>
+              <span class="trend-count">850 posts</span>
+            </div>
+            <div class="trending-item" data-tag="Art">
+              <span class="trend-tag">#CyberAesthetics</span>
+              <span class="trend-count">620 posts</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer Meta -->
+        <div class="sidebar-footer">
+          <p>© 2026 CodeAlpha Internship. Task 2: Social Media Platform.</p>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <!-- ==================== MODALS ==================== -->
+
+  <!-- Edit Profile Modal -->
+  <div id="edit-profile-modal-backdrop" class="modal-backdrop">
+    <div class="modal edit-profile-modal">
+      <button class="modal-close-btn" id="close-edit-profile-btn">
+        <i data-lucide="x"></i>
+      </button>
+      <div class="modal-header">
+        <h3>Edit Profile</h3>
+        <p>Update your public details and biography.</p>
+      </div>
+      <form id="edit-profile-form" class="modal-form">
+        <div class="form-group">
+          <label for="edit-name">Display Name</label>
+          <input type="text" id="edit-name" required placeholder="Your name">
+        </div>
+        <div class="form-group">
+          <label for="edit-bio">Bio</label>
+          <textarea id="edit-bio" rows="3" placeholder="Tell the world about yourself..."></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="edit-location">Location</label>
+            <input type="text" id="edit-location" placeholder="City, Country">
+          </div>
+          <div class="form-group">
+            <label for="edit-website">Website / Portfolio</label>
+            <input type="url" id="edit-website" placeholder="https://example.com">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="edit-avatar">Avatar URL</label>
+          <input type="url" id="edit-avatar" placeholder="https://images.unsplash.com/...">
+        </div>
+        <div class="form-group">
+          <label for="edit-banner">Banner Image URL</label>
+          <input type="url" id="edit-banner" placeholder="https://images.unsplash.com/...">
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" id="cancel-edit-profile-btn" class="btn btn-outline">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Auth Modal -->
+  <div id="auth-modal-backdrop" class="modal-backdrop">
+    <div class="modal auth-modal">
+      <button class="modal-close-btn" id="close-auth-modal-btn">
+        <i data-lucide="x"></i>
+      </button>
+      <div class="auth-tabs">
+        <button id="auth-tab-login" class="auth-tab-btn active">Sign In</button>
+        <button id="auth-tab-register" class="auth-tab-btn">Sign Up</button>
+      </div>
+
+      <!-- Login Form -->
+      <form id="login-form" class="auth-form">
+        <div class="auth-header">
+          <h3>Welcome Back</h3>
+          <p>Sign in to post, like, and connect with people.</p>
+        </div>
+        <div class="form-group">
+          <label for="login-identifier">Username or Email</label>
+          <input type="text" id="login-identifier" required placeholder="alex@codealpha.com or alexdev">
+        </div>
+        <div class="form-group">
+          <label for="login-password">Password</label>
+          <input type="password" id="login-password" required placeholder="••••••••">
+        </div>
+        <div class="quick-credentials-box">
+          <small>⚡ <strong>Demo Account:</strong> alex@codealpha.com / password123</small>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block btn-lg">Sign In</button>
+      </form>
+
+      <!-- Register Form -->
+      <form id="register-form" class="auth-form" style="display: none;">
+        <div class="auth-header">
+          <h3>Join Pulse Social</h3>
+          <p>Create your profile and start sharing your ideas.</p>
+        </div>
+        <div class="form-group">
+          <label for="reg-name">Full Name</label>
+          <input type="text" id="reg-name" required placeholder="Jane Doe">
+        </div>
+        <div class="form-group">
+          <label for="reg-username">Username</label>
+          <input type="text" id="reg-username" required placeholder="janedoe">
+        </div>
+        <div class="form-group">
+          <label for="reg-email">Email Address</label>
+          <input type="email" id="reg-email" required placeholder="jane@example.com">
+        </div>
+        <div class="form-group">
+          <label for="reg-password">Password (min 6 chars)</label>
+          <input type="password" id="reg-password" minlength="6" required placeholder="••••••••">
+        </div>
+        <button type="submit" class="btn btn-primary btn-block btn-lg">Create Account</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== MOBILE TRENDS & CREATORS MODAL ==================== -->
+  <div id="mobile-trends-modal-backdrop" class="modal-backdrop">
+    <div class="modal mobile-trends-modal">
+      <button class="modal-close-btn" id="close-mobile-trends-btn">
+        <i data-lucide="x"></i>
+      </button>
+      <div class="modal-header">
+        <h3>✨ Discover & Connect</h3>
+        <p>Explore recommended creators and hot topics.</p>
+      </div>
+
+      <!-- Quick Demo Switcher on Mobile -->
+      <div class="sidebar-card" style="margin-bottom: 16px;">
+        <h4 style="font-size: 0.9rem; margin-bottom: 6px;">⚡ Switch Account (1-Click)</h4>
+        <div class="demo-accounts-list">
+          <button class="demo-account-chip" data-email="alex@codealpha.com">
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80" alt="Alex">
+            <span>Alex Rivera</span>
+          </button>
+          <button class="demo-account-chip" data-email="sophia@codealpha.com">
+            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&auto=format&fit=crop&q=80" alt="Sophia">
+            <span>Sophia Patel</span>
+          </button>
+          <button class="demo-account-chip" data-email="marcus@codealpha.com">
+            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80" alt="Marcus">
+            <span>Marcus Vance</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Suggested Creators List Container -->
+      <div class="sidebar-card">
+        <h4 style="font-size: 0.9rem; margin-bottom: 8px;">👥 Who to Follow</h4>
+        <div id="mobile-suggested-users-list" class="suggested-users-list">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MOBILE BOTTOM NAVIGATION BAR ==================== -->
+  <nav class="mobile-bottom-bar" id="mobile-bottom-bar">
+    <button class="mobile-nav-btn active" id="mob-nav-home">
+      <i data-lucide="home"></i>
+      <span>Home</span>
+    </button>
+    <button class="mobile-nav-btn" id="mob-nav-explore">
+      <i data-lucide="compass"></i>
+      <span>Explore</span>
+    </button>
+    <button class="mobile-nav-compose" id="mob-nav-compose" title="New Post">
+      <i data-lucide="plus"></i>
+    </button>
+    <button class="mobile-nav-btn" id="mob-nav-trends">
+      <i data-lucide="sparkles"></i>
+      <span>Discover</span>
+    </button>
+    <button class="mobile-nav-btn" id="mob-nav-profile">
+      <i data-lucide="user"></i>
+      <span>Profile</span>
+    </button>
+  </nav>
+
+  <!-- Application Logic -->
+  <script src="app.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>
